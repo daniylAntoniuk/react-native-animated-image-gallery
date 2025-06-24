@@ -29,7 +29,6 @@
 // // } from 'react-native-animated-pagination-dots';
 // import ExpandingDot from "./Dot/ExpandingDot";
 // import MaskedView from "@react-native-masked-view/masked-view";
-
 // const styles = StyleSheet.create({
 //   flex: {
 //     flex: 1,
@@ -50,7 +49,6 @@
 //   },
 //   image: {
 //     height: 225,
-
 //     width: Dimensions.get("screen").width //- 40,
 //   },
 //   avatar: {
@@ -117,7 +115,6 @@
 //   pagerView2: {
 //     marginTop: 10,
 //     flex: 1,
-
 //     //backgroundColor: "#292929CC"
 //   },
 //   pagerItem: {
@@ -143,7 +140,6 @@
 //     shadowRadius: 6.27,
 //   }
 // });
-
 // type PropsType = {
 //   type: "tile" | "card" | "card2" | "avatar";
 //   height?: number;
@@ -155,12 +151,10 @@
 //   transitionConfig: any;
 //   navigation?: any;
 // };
-
 // type StateType = {
 //   width: number;
 //   height: number;
 // };
-
 // export class TilesScreen extends React.Component<PropsType, StateType> {
 //   static defaultProps = {
 //     type: "tile",
@@ -168,28 +162,21 @@
 //     DetailComponent: DetailScreen,
 //     transitionConfig: scaleCenter(),
 //   };
-
 //   state = {
 //     width: Dimensions.get("window").width,
 //     height: Dimensions.get("window").height,
 //   };
-
 //   render() {
 //     const { title, navigation } = this.props;
 //     const globId = this.props.id;
 //     const type = this.props.type;
-
 //     return (
-
 //       <View style={[styles.flex, {}]} onLayout={this.onLayout}>
-
 //         {/* {!navigation ? <NavBar title={title} /> : undefined} */}
 //         <MapImages height={this.props.height} renderItem={this.renderItem} images={this.props.images} />
-
 //       </View>
 //     );
 //   }
-
 //   onLayout = (event: any) => {
 //     //const { width, height } = event.nativeEvent.layout;
 //     if (this.state.width !== Dimensions.get("screen").width || this.state.height !== Dimensions.get("screen").height) {
@@ -199,9 +186,7 @@
 //       });
 //     }
 //   };
-
 //   keyExtractor = (item: any) => item.id;
-
 //   renderItem = (data: any) => {
 //     const { navigation } = this.props;
 //     const type = this.props.type;
@@ -218,7 +203,6 @@
 //         return null;
 //     }
 //   };
-
 //   renderTile = ({ item, index }: any) => {
 //     const { navigation } = this.props;
 //     const { width } = this.state;
@@ -265,7 +249,6 @@
 //     const type = this.props.type;
 //     const transitionConfig = fadeIn();
 //     let sharedElements: SharedElementsConfig = [];
-
 //     const props: any = {
 //       hero,
 //       type,
@@ -330,7 +313,6 @@
 //         routeName = "Card";
 //         break;
 //     }
-
 //     if (navigation) {
 //       //navigation.navigate("Catalog", { screen: "Animate", params: { screen: "SingleHousingScreen", params: { id: el.id } } })
 //       navigation.navigate("Catalog", {
@@ -344,8 +326,6 @@
 //           id: this.props.id,
 //           wishType: this.props.wishType
 //         }
-
-
 //       });
 //     } else {
 //       Router.push(<DetailComponent {...props} />, {
@@ -360,9 +340,7 @@
 //   const positionAnimatedValue = React.useRef(new Animated.Value(0)).current;
 //   const inputRange = [0, 2];
 //   const { height, width } = useWindowDimensions();
-
 //   //const width = Dimensions.get('window').width;
-
 //   const scrollX = Animated.add(
 //     scrollOffsetAnimatedValue,
 //     positionAnimatedValue
@@ -405,7 +383,6 @@
 //               y: 0,
 //               animated: true,
 //             }); 
-
 //           }
 //         }} onPageScroll={onPageScroll}
 //           style={{ flex: 1 }} initialPage={0}>
@@ -431,13 +408,11 @@
 //           >
 //             {/* <View style={{width:40, height:20, backgroundColor:"red",position:"absolute", left:0, top:0 }}></View> */}
 //         <ScrollView showsHorizontalScrollIndicator={false} scrollEnabled={!true} ref={scrollRef} horizontal contentContainerStyle={{}} style={{flex:1, position: "absolute", top: 0, }}>
-
 //           {/* <View style={[ { position: "relative",  }]}> */}
 //             <ExpandingDot
 //               //marginHorizontal={3}
 //               data={props.images?.map((el: any, index: number) => (index))!}
 //               // activeDotColor={'#282E3A'}
-
 //               // dotStyle={{
 //               //   borderColor: "white",
 //               //   borderWidth: 0.4,
@@ -466,7 +441,6 @@
 //               //@ts-ignore
 //               scrollX={scrollX}
 //               //expandingDotWidth={30}
-
 //               dotSize={14}
 //             />
 //           {/* </View> */}
@@ -474,7 +448,6 @@
 //           </MaskedView>
 //           </MaskedView>
 //       </View>
-
 //     </>
 //   )
 // }

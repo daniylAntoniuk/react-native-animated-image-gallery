@@ -1,29 +1,15 @@
 {
   "compilerOptions": {
-    "rootDir": ".",
-    "paths": {
-      "react-native-animated-image-gallery": ["./src/index"]
-    },
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "jsx": "react-jsx",
-    "lib": ["ESNext"],
+    "outDir": "dist",
+    "declaration": true,
     "module": "ESNext",
-    "moduleResolution": "bundler",
-    "noEmit": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true,
-    "noImplicitUseStrict": false,
-    "noStrictGenericChecks": false,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "resolveJsonModule": true,
+    "target": "ES2015",
+    "jsx": "react",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "skipLibCheck": true,
-    "strict": true,
-    "target": "ESNext",
-    "verbatimModuleSyntax": true
-  }
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*"]
 }
