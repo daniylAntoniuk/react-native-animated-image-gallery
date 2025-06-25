@@ -40,6 +40,7 @@
     "@react-navigation/native": "*",
     "@react-navigation/stack": "*",
     "@react-native-masked-view/masked-view": "*",
-    "react-native-pager-view": "*"
+    "react-native-pager-view": "*",
+    "@likashefqet/react-native-image-zoom": "*"
   }
 }

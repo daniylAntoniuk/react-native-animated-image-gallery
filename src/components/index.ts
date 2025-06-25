@@ -7,6 +7,5 @@ export * from "./Colors";
 export * from "./icon";
 export * from "./Button";
 export * from "./CompatSharedElement";
-export * from "./viewPager";
-export * from "./linearGradient";
+// export * from "./viewPager";
 export * from "./SegmentedControl";

@@ -1,4 +1,2 @@
-import EntypoIcon from "react-native-vector-icons/Entypo";
-
-export const Icon = EntypoIcon;
-Icon.loadFont();
+import {View} from "react-native"
+export const Icon = <View></View>;

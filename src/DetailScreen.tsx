@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { StyleSheet, View, Image } from "react-native";
 
 import { NavBar, SharedElement, Colors } from "./components";
