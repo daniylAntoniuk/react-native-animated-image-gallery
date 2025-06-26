@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import {
   StyleSheet,
   View,
@@ -6,24 +6,20 @@ import {
   Dimensions,
   Animated,
   StatusBar,
-  Platform,
+  FlatList,
   useWindowDimensions,
 } from "react-native";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 import {
   NavBar,
   Colors,
-  Router,
   useNavBarHeight,
 } from "./components";
-import { fadeIn } from "./transitions";
 import { Hero, SharedElementsConfig } from "./types";
-import React from "react";
 import { SharedElement } from "react-navigation-shared-element";
-// import PagerView, { PagerViewOnPageScrollEventData } from "react-native-pager-view";
-// import { ExpandingDot } from "react-native-animated-pagination-dots";
-import { ImageZoom } from "@likashefqet/react-native-image-zoom";
+import SharedImage from "./SharedImage";
 
 const styles = StyleSheet.create({
   container: {
@@ -73,19 +69,21 @@ const styles = StyleSheet.create({
 });
 
 type Props = {
-  hero: Hero;
-  navigation: any;
-  route: any
+  uid?: string;
+  index?: number;
+  images?:[];
 };
 
 export function PagerScreen(props: Props) {
-  const { navigation } = props;
-  const { images } = props.route?.params;
-  const initialHero = props.route.params?.hero ?? props.hero;
-  const globId = props.route.params?.id;
-  const initialIndex = initialHero.id;
+  const navigation = useNavigation();
+  const route = useRoute();
+  const images = route?.params?.images ?? props.images;
+  const initialHero = route.params?.uid ?? props.uid;
+  const globId = route.params?.id;
+  const initialIndex = route.params?.index ?? props.index;
   const [hero, setHero] = useState(() => initialHero);
-  //navigation.setOptions({ tabBarStyle: { display: 'none' },tabBarItemStyle: { display: "none" } })
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   StatusBar.setTranslucent(false);
   StatusBar.setBackgroundColor(Colors.dark)
   StatusBar.setBarStyle("light-content");
@@ -95,31 +93,21 @@ export function PagerScreen(props: Props) {
       useNativeDriver: true,
     })
   );
-
-  const [width, setWidth] = useState(() => Dimensions.get("window").width);
+  const { width } = useWindowDimensions();
   const navBarHeight = useNavBarHeight();
 
-  const onLayout = useCallback(
-    (event: any) => setWidth(event.nativeEvent.layout.width),
-    [setWidth]
-  );
 
   const onBack = useCallback(() => {
     if (navigation) {
       navigation.goBack();
-    } else {
-      Router.pop({
-        sharedElements: [`heroPhoto.${hero.id}`],
-        transitionConfig: fadeIn(),
-      });
     }
   }, [navigation, hero]);
 
   const onDismissGestureStateChange = useCallback(
     (event: any) => {
       const { nativeEvent } = event;
-      
-      if (nativeEvent.state !== State.END ) {
+
+      if (nativeEvent.state !== State.END) {
         return;
       }
       if (Math.abs(nativeEvent.translationY) >= 300) {
@@ -151,7 +139,7 @@ export function PagerScreen(props: Props) {
       return (
         <View style={{ width }} key={`item.${item.id}`}>
           <SharedElement
-            id={`${props.route?.params.wishType}.heroPhoto.${globId}.${id}`}
+            id={`${route?.params.wishType}.heroPhoto.${globId}.${id}`}
             style={styles.flex}
           //navigation={navigation}
           >
@@ -175,19 +163,7 @@ export function PagerScreen(props: Props) {
               }} resizeMode="contain" source={{ uri: photo }} /> */}
             {/* </> */}
           </SharedElement>
-          <ImageZoom containerStyle={{ backgroundColor: Colors.dark, height: "100%", position: "absolute", flex: 1 }} style={{//flex: 1,
-            //width: width,
-            // zIndex:1,
-            // position:"absolute",
-            // height: 225,
-            flex: 1,
-            //position: "absolute",
-            width: width,
-            height: "100%",
-            resizeMode: "contain",
-            //position: "absolute",
-            //resizeMode: "contain"
-          }} uri={photo} />
+          
           {/* <Image style={{
             zIndex:0,
             flex: 1,
@@ -202,7 +178,6 @@ export function PagerScreen(props: Props) {
     },
     [width, navigation]
   );
-  console.log("images", images)
   const onItemSelected = useCallback(
     (index: number) => {
       const newHero = images[index];
@@ -212,10 +187,19 @@ export function PagerScreen(props: Props) {
     },
     [navigation, hero, setHero]
   );
+  const viewabilityConfig = {
+    viewAreaCoveragePercentThreshold: 50, // consider item visible if 50% is visible
+  };
 
+  const onViewRef = useRef(({ viewableItems }) => {
+    if (viewableItems.length > 0) {
+      const currentIndex = viewableItems[0].index;
+      setCurrentIndex(currentIndex);
+    }
+  });
   return (
 
-    <View style={styles.container} onLayout={onLayout}>
+    <View style={styles.container}>
       <StatusBar barStyle="light-content" animated />
       <Animated.View
         style={[
@@ -228,53 +212,47 @@ export function PagerScreen(props: Props) {
           },
         ]}
       >
-        <NavBar back="close" light title={hero.id + 1 + "/" + images.length} onBack={onBack} />
+        <NavBar back="close" light title={currentIndex + 1 + "/" + images.length} onBack={onBack} />
       </Animated.View>
-      {Platform.OS=="ios" ?
-        <PanGestureHandler
-          onGestureEvent={onDismissGestureEvent}
-        onHandlerStateChange={onDismissGestureStateChange}
-        >
-          <Animated.View
-            style={[
-              styles.flex,
-              {
-                marginVertical: navBarHeight,
-                transform: [
-                  { translateY: Animated.multiply(dismissAnimValue, 0.5) },
-                ],
-              },
-            ]}
-          >
-            {/* <ViewPager
-              style={styles.flex}
-              data={images}
-              initialItemIndex={initialIndex}
-              renderItem={renderItem}
-              getItemLayout={getItemLayout}
-              onItemSelected={onItemSelected}
-            /> */}
-
-          </Animated.View>
-        </PanGestureHandler>
-        : <PanGestureHandler
+      <PanGestureHandler
         activeOffsetY={[-50, 50]}
-
-          onGestureEvent={onDismissGestureEvent}
-          onHandlerStateChange={onDismissGestureStateChange}
+        onGestureEvent={onDismissGestureEvent}
+        onHandlerStateChange={onDismissGestureStateChange}
+      >
+        <Animated.View
+          style={[
+            styles.flex,
+            {
+              marginVertical: navBarHeight,
+              transform: [
+                { translateY: Animated.multiply(dismissAnimValue, 0.5) },
+              ],
+            },
+          ]}
         >
-          <Animated.View
-            style={[
-              styles.flex,
-              {
-                marginVertical: navBarHeight,
-                transform: [
-                  { translateY: Animated.multiply(dismissAnimValue, 0.5) },
-                ],
-              },
-            ]}
-          >
-            {/* <ViewPager
+          <FlatList
+            data={images}
+            keyExtractor={(item, index) => index}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ flexGrow: 1 }}
+            onViewableItemsChanged={onViewRef.current}
+            viewabilityConfig={viewabilityConfig}
+            renderItem={({ item, index }) => (
+              <SharedImage
+                source={item}
+                uniqueImageId={`${initialHero}.${initialIndex}`}
+                style={{
+                  zIndex: 0,
+                  width,
+                  height: '100%',
+                  resizeMode: "contain"
+                }} resizeMode="contain" resizeMethod="scale"
+              />
+            )}
+          />
+          {/* <ViewPager
               style={styles.flex}
               data={images}
               initialItemIndex={initialIndex}
@@ -283,20 +261,16 @@ export function PagerScreen(props: Props) {
               onItemSelected={onItemSelected}
             /> */}
 
-          </Animated.View>
-        </PanGestureHandler>}
+        </Animated.View>
+      </PanGestureHandler>
     </View>
   );
 }
 
 PagerScreen.sharedElements = (
   navigation: any,
-  route: any,
-  otherNavigation: any,
-  showing: boolean
-): SharedElementsConfig | void => {
-  const hero = navigation.route.params.hero;
+): SharedElementsConfig => {
+  const uid = navigation.route.params.uid;
   const id = navigation.route.params.id;
-  const wishType = navigation.route.params.wishType;
-  return [`${wishType}.heroPhoto.${id}.${hero.id}`];
+  return [`sharedPhoto.${uid}.${id}`];
 };

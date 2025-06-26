@@ -4,7 +4,6 @@ import { StyleSheet, View, TouchableOpacity, ViewStyle } from "react-native";
 import { Colors, Shadows } from "../Colors";
 import { Text } from "../Text";
 import { Icon } from "../icon";
-import { Router } from "../router/Router";
 import { useNavBarHeight } from "./constants";
 
 const styles = StyleSheet.create({
@@ -51,8 +50,6 @@ export function NavBar(props: Props) {
   const onPressBack = useCallback(() => {
     if (onBack) {
       onBack();
-    } else {
-      Router.pop();
     }
   }, [onBack]);
   const navBarHeight = useNavBarHeight();
